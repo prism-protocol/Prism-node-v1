@@ -38,7 +38,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws-cn:dynamodb:cn-north-1:519581462634:table/*"
-
+    - Effect: "Allow"
+      Action:
+       - "s3:PutObject"
+      Resource: "arn:aws-cn:s3:::prismusers/*"
 
 # you can overwrite defaults here
 #  stage: dev
@@ -81,9 +84,41 @@ functions:
           path: hello
           method: post
 #          authorizer: authorize
+  userModule:
+    handler: handler.fetchUser
+    events:
+      - http:
+         path: getuser
+         method: post
+         private: true
+
+  uploadModule:
+    handler: userProfile.uploadFile
+    events:
+      - http:
+         path: upload
+         method: post
+         private: true
+
+  insertDataModule:
+    handler: mydata.insertMyData
+    events:
+      - http:
+         path: data
+         method: post
+         private: true
+
+  mydata:
+    handler: mydata.fetchMyData
+    events:
+      - http:
+         path: fetchdata
+         method: post
+         private: true
+
   authorize:
     handler: handler.authorize
-  generateToken:
+  fetchPrograms:
     handler: handler.fetchEvents
     events:
       - http:

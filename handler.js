@@ -38,6 +38,67 @@ module.exports.fetchEvents = (event, context, callback) => {
   //callback(null, 'successfull');
 };
 
+module.exports.fetchUser = (event, context, callback) => {
+	 const requestBody = JSON.parse(event.body);
+	 console.log('userid from req..',requestBody.userId);
+   var tabParams = {
+        TableName : 'Users',
+				KeyConditionExpression: "#user = :userid",
+    		ExpressionAttributeNames:{
+        "#user": "userId"
+    		},
+    		ExpressionAttributeValues: {
+        ":userid": requestBody.userId
+    		}
+      };
+
+       documentClient.query(tabParams, function(err, data){
+        if(err){
+            callback(err, null);
+        }else{
+					if(typeof data === null){
+						const response = {
+	            statusCode: 200,
+							body: JSON.stringify({
+							response:'0',
+							message:'Invalid user',
+	            userInfo: data.Items
+							})
+	          };
+	          callback(null, response);
+					}else{
+						var tableParams = {
+				        TableName : 'mydata',
+				 				KeyConditionExpression: "#user = :userid",
+				     		ExpressionAttributeNames:{
+				         "#user": "userId"
+				     		},
+				     		ExpressionAttributeValues: {
+				         ":userid": requestBody.userId
+				     		}
+				       };
+
+							 documentClient.query(tableParams, function(err, myData){
+				        if(err){
+				            callback(err, null);
+				        }else{
+									const response = {
+				            statusCode: 200,
+										body: JSON.stringify({
+										response:'3',
+										message:'user data fetched successfully',
+				            userInfo: data.Items,
+										dataInfo: myData.Items
+										})
+				          };
+				          callback(null, response);
+								}
+							});
+        }
+			}
+      });
+};
+
 module.exports.authorize = (event, context, callback) => {
   try {
     console.log(event.authorizationToken);
