@@ -35,7 +35,6 @@ module.exports.fetchEvents = (event, context, callback) => {
           callback(null, response);
         }
       });
-  //callback(null, 'successfull');
 };
 
 module.exports.fetchUser = (event, context, callback) => {
