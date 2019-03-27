@@ -55,13 +55,16 @@ module.exports.fetchUser = (event, context, callback) => {
         if(err){
             callback(err, null);
         }else{
-					if(typeof data === null){
+					console.log('my data info..',data.Items);
+					console.log('my data info..',data.Items.length);
+					if(typeof data.Items === null || data.Items.length == 0 ){
 						const response = {
 	            statusCode: 200,
 							body: JSON.stringify({
 							response:'0',
 							message:'Invalid user',
-	            userInfo: data.Items
+	            userInfo: data.Items,
+							dataInfo: []
 							})
 	          };
 	          callback(null, response);
