@@ -84,6 +84,7 @@ module.exports.fetchUser = (event, context, callback) => {
 				        if(err){
 				            callback(err, null);
 				        }else{
+									console.log('key schema..',JSON.stringify(myData));
 									const response = {
 				            statusCode: 200,
 										body: JSON.stringify({
